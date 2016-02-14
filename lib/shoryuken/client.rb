@@ -17,7 +17,13 @@ module Shoryuken
       end
 
       def sqs
-        @sqs ||= Aws::SQS::Client.new(aws_client_options(:sqs_endpoint))
+        @sqs ||= begin
+                   if !(options = aws_client_options(:sqs_endpoint)).empty?
+                     Aws::SQS::Client.new(options)
+                   else
+                     Aws::SQS::Client.new
+                   end
+                 end
       end
 
       def topics(name)
